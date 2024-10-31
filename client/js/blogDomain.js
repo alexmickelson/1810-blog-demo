@@ -1,5 +1,13 @@
 import { createBlogInApi, getAllBlogsFromApi } from "./blogService.js";
 
+
+// BLOG 
+// {
+//   id: Number,
+//   author: String,
+//   title: String,
+//   paragraphs: string[]
+// }
 var blogs = [];
 
 export const getAllBlogs = async () => {

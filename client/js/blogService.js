@@ -18,10 +18,10 @@ export const createBlogInApi = async (blog) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(blog),
   });
-  if (!response.ok) {
-    console.log(blog);
-    throw new Error("error creating blog");
-  }
+  // if (!response.ok) {
+  //   console.log(blog);
+  //   throw new Error("error creating blog");
+  // }
 };
 
 export const updateBlogFromApi = async (id, updatedBlog) => {
@@ -34,6 +34,7 @@ export const updateBlogFromApi = async (id, updatedBlog) => {
     console.log(id, updatedBlog);
     throw new Error(`error updating blog`);
   }
+
 };
 
 export const deleteBlogFromApi = async (id) => {
