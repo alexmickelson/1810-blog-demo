@@ -3,9 +3,10 @@ import { createBlog, getAllBlogs } from "./blogDomain.js";
 const generateBlogListElement = (blog) => {
   const blogItemElement = document.createElement("a");
 
-  blogItemElement.setAttribute("href", `/blog?id=${blog.id}`)
+  blogItemElement.setAttribute("href", `/blog.html?id=${blog.id}`)
 
   blogItemElement.textContent = `${blog.title} - ${blog.author}`;
+  blogItemElement.classList.add("blogListItem")
   return blogItemElement;
 };
 

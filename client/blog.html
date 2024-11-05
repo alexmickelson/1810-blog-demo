@@ -1,13 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="style.css">
-  <script type="module" src="./ui.js"></script>
-  <title>Blog List</title>
-</head>
-<body>
-  <section id="blogContentContainer"></section>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <script type="module" src="./js/blogItemUI.js"></script>
+    <title>Blog List</title>
+  </head>
+  <body>
+    <section id="blogContentContainer"></section>
+    <hr />
+    <section id="commentsContainer">
+      <article>
+        <form id="newCommentForm">
+          <div>
+            <label>
+              name
+              <br />
+              <input type="text" id="commentNameInput" />
+            </label>
+          </div>
+          <div>
+            <label>
+              comment
+              <br />
+              <textarea id="commentTextInput"></textarea>
+            </label>
+          </div>
+          <div>
+            <input type="submit" />
+          </div>
+        </form>
+      </article>
+      <hr />
+      <article id="commentsList"></article>
+    </section>
+  </body>
 </html>

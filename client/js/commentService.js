@@ -12,7 +12,7 @@ export const getCommentByIdFromApi = async (blogId, commentId) => {
   return await response.json();
 };
 
-export const createCommentFromApi = async (blogId, comment) => {
+export const createCommentOnApi = async (blogId, comment) => {
   const response = await fetch(`${API_URL}/blogs/${blogId}/comments`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
