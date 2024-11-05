@@ -27,17 +27,18 @@ app.MapGet("/blogs", () =>
       if (!File.Exists(blogFile)) return null;
 
       var blog = JsonSerializer.Deserialize<Blog>(File.ReadAllText(blogFile));
-      return blog == null ? null : new { blog.Id, blog.Author, blog.Title };
+      return blog;
     })
     .Where(b => b != null);
 
-  return Results.Ok(blogs);
+  return blogs;
 });
 
 app.MapGet("/blogs/{id}", (ulong id) =>
 {
   var blogFolder = id.ToString();
   var blogFile = Path.Combine(storageRoot, blogFolder, "blog.json");
+
   if (!File.Exists(blogFile))
     throw new Exception("Blog not found.");
 
@@ -82,23 +83,13 @@ app.MapGet("/blogs/{blogId}/comments", (ulong blogId) =>
 {
   var commentsPath = Path.Combine(storageRoot, blogId.ToString(), "comments");
   if (!Directory.Exists(commentsPath))
-    throw new Exception("No comments found.");
+    return [];
 
-  var commentIds = Directory.GetFiles(commentsPath)
-      .Select((file) => Path.GetFileNameWithoutExtension(file))
-      .Select((fileName) => ulong.Parse(fileName));
+  var comments = Directory.GetFiles(commentsPath)
+      .Select((file) => File.ReadAllText(file))
+      .Select((rawComment) => JsonSerializer.Deserialize<Comment>(rawComment));
 
-  return Results.Ok(commentIds);
-});
-
-app.MapGet("/blogs/{blogId}/comments/{commentId}", (ulong blogId, ulong commentId) =>
-{
-  var commentFile = Path.Combine(storageRoot, blogId.ToString(), "comments", $"{commentId}.json");
-  if (!File.Exists(commentFile))
-    throw new Exception("Comment not found.");
-
-  var comment = JsonSerializer.Deserialize<Comment>(File.ReadAllText(commentFile));
-  return Results.Ok(comment);
+  return comments;
 });
 
 app.MapPost("/blogs/{blogId}/comments", async (ulong blogId, Comment comment) =>
@@ -109,28 +100,26 @@ app.MapPost("/blogs/{blogId}/comments", async (ulong blogId, Comment comment) =>
   var commentFile = Path.Combine(commentsPath, $"{comment.Id}.json");
   await File.WriteAllTextAsync(commentFile, JsonSerializer.Serialize(comment));
 
-  return Results.Created($"/blogs/{blogId}/comments/{comment.Id}", comment);
+  return comment;
 });
 
 app.MapPut("/blogs/{blogId}/comments/{commentId}", async (ulong blogId, ulong commentId, Comment updatedComment) =>
 {
   var commentFile = Path.Combine(storageRoot, blogId.ToString(), "comments", $"{commentId}.json");
   if (!File.Exists(commentFile))
-    return Results.NotFound("Comment not found.");
+    throw new Exception("Comment not found.");
 
   var newComment = updatedComment with { Id = commentId };
   await File.WriteAllTextAsync(commentFile, JsonSerializer.Serialize(newComment));
-  return Results.NoContent();
 });
 
 app.MapDelete("/blogs/{blogId}/comments/{commentId}", (ulong blogId, ulong commentId) =>
 {
   var commentFile = Path.Combine(storageRoot, blogId.ToString(), "comments", $"{commentId}.json");
   if (!File.Exists(commentFile))
-    return Results.NotFound("Comment not found.");
+    throw new Exception("Comment not found.");
 
   File.Delete(commentFile);
-  return Results.NoContent();
 });
 
 app.Run();
